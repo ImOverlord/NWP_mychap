@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/client",
             "args": [
                 "--target",
-                "www.google.com",
+                "127.0.0.1",
                 "--port",
                 "3000",
                 "--password",

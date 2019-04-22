@@ -16,6 +16,12 @@ MAIN	=	main.c
 SRC		=	arguments/parse_args.c											\
 			arguments/valid_arguments.c										\
 			network/resolve_hostname.c										\
+			socket/send_socket.c											\
+			socket/create_raw_socket.c										\
+			socket/csum.c													\
+			socket/fill_header.c											\
+			handshake/init.c												\
+			handshake/hash.c												\
 
 TSRC	=	arguments/parse_args.spec.c										\
 			arguments/valid_arguments.spec.c								\
@@ -30,7 +36,7 @@ OBJ		=	$(SRCS:.c=.o)
 
 TOBJ	=	$(TSRCS:.c=.o)
 
-CFLAGS	=	-W -Wall -Wextra -pedantic -I$(DIR) -g3
+CFLAGS	=	-W -Wall -Wextra -pedantic -I$(DIR) -g3 -lcrypto
 
 TEST	=	tests_run
 

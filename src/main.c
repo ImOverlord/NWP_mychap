@@ -9,6 +9,7 @@
 #include <string.h>
 #include "arguments/arguments.h"
 #include "network/network.h"
+#include "handshake/handshake.h"
 
 static int validate_hostname(arguments_t **args)
 {
@@ -20,7 +21,7 @@ static int validate_hostname(arguments_t **args)
                 printf("No such hostname: '%s'\n", args[args_index]->value);
                 return 0;
             }
-            args[args_index]->value = ip;
+            args[args_index]->value = strdup(ip);
             break;
         }
     }
@@ -36,6 +37,8 @@ int main(int ac, char *argv[])
     if (!valid_arguments(args))
         return ERROR;
     if (!validate_hostname(args))
+        return ERROR;
+    if (!init_handshake(args))
         return ERROR;
     return SUCCESS;
 }
