@@ -13,9 +13,12 @@ TDIR	=	tests/
 
 MAIN	=	main.c
 
-SRC		=	
+SRC		=	arguments/parse_args.c											\
+			arguments/valid_arguments.c										\
+			network/resolve_hostname.c										\
 
-TSRC	=	
+TSRC	=	arguments/parse_args.spec.c										\
+			arguments/valid_arguments.spec.c								\
 
 SRCS	=	$(addprefix $(DIR), $(SRC))										\
 			$(addprefix $(DIR), $(MAIN))									\
@@ -27,7 +30,7 @@ OBJ		=	$(SRCS:.c=.o)
 
 TOBJ	=	$(TSRCS:.c=.o)
 
-CFLAGS	=	-W -Wall -Wextra -pedantic -I$(DIR)
+CFLAGS	=	-W -Wall -Wextra -pedantic -I$(DIR) -g3
 
 TEST	=	tests_run
 
