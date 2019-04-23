@@ -17,7 +17,8 @@ char *sha256(const char *str)
     SHA256_CTX sha256;
     char *output_buffer;
 
-    if (!(output_buffer = calloc(1, sizeof(char) * ((SHA256_DIGEST_LENGTH * 2) + 1))))
+    if (!(output_buffer =
+    calloc(1, sizeof(char) * ((SHA256_DIGEST_LENGTH * 2) + 1))))
         return (NULL);
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, str, strlen(str));

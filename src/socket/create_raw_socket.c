@@ -38,8 +38,8 @@ raw_socket_t *crate_raw_socket()
     int one = 1;
     const int *val = &one;
     int s = socket (AF_INET, SOCK_RAW, IPPROTO_UDP);
-    
-    if(s == -1)
+
+    if (s == -1)
         return NULL;
     if (setsockopt(s, IPPROTO_IP, IP_HDRINCL, val, sizeof(one)) < 0)
         return NULL;

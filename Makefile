@@ -36,7 +36,7 @@ OBJ		=	$(SRCS:.c=.o)
 
 TOBJ	=	$(TSRCS:.c=.o)
 
-CFLAGS	=	-W -Wall -Wextra -pedantic -I$(DIR) -g3 -lcrypto
+CFLAGS	=	-W -Wall -Wextra -pedantic -I$(DIR) -lcrypto
 
 TEST	=	tests_run
 

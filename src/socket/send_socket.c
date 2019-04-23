@@ -5,20 +5,16 @@
 ** send_socket
 */
 
-#include<stdio.h>	//for printf
-#include<string.h> //memset
-#include<sys/socket.h>	//for socket ofcourse
-#include<stdlib.h> //for exit(0);
-#include<errno.h> //For errno - the error number
-#include<netinet/udp.h>	//Provides declarations for udp header
-#include<netinet/ip.h>	//Provides declarations for ip header
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include "socket/socket.h"
-
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<errno.h>
+#include<netinet/udp.h>
+#include<netinet/ip.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "socket/socket.h"
 
 char *clean_reponse(char *buffer)
 {
@@ -66,7 +62,8 @@ char *send_socket(
     fill_ip_header(iph, datagram, data, sin);
     fill_udp_header(udph, data, sock->port, port);
     fill_pseudo_header(udph, data, sin);
-    if (sendto (sock->sock, datagram, iph->tot_len, 0, (struct sockaddr *) &sin, sizeof (sin)) < 0)
+    if (sendto (sock->sock, datagram, iph->tot_len, 0,
+    (struct sockaddr *) &sin, sizeof (sin)) < 0)
         return NULL;
     return get_reponse(sock);
 }

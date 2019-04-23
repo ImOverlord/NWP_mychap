@@ -31,7 +31,7 @@ struct pseudo_header
 
 raw_socket_t *crate_raw_socket();
 char *send_socket(char *target, int port, raw_socket_t *sock, char *message);
-unsigned short csum(unsigned short *ptr,int nbytes);
+unsigned short csum(unsigned short *ptr, int nbytes);
 void fill_pseudo_header(
     struct udphdr *udph,
     char *data,
