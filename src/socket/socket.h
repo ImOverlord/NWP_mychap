@@ -15,11 +15,6 @@
 #include <arpa/inet.h>
 
 #define PORT    3000
-#define DEST    47115
-
-#define IS_RESP_PACKET(x, me)    \
-   (((struct udphdr *)(x + sizeof(struct iphdr)))->dest == DEST)
-
 
 typedef struct raw_socket_s {
     int sock;

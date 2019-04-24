@@ -27,6 +27,15 @@ char *clean_reponse(char *buffer)
     return clean;
 }
 
+int is_resp_packet(char *buffer)
+{
+    int packet_port =
+    ntohs(((struct udphdr *)(buffer + sizeof(struct iphdr)))->dest);
+    if (packet_port == PORT)
+        return 1;
+    return 0;
+}
+
 char *get_reponse(raw_socket_t *sock, struct sockaddr_in sin)
 {
     char *buffer;
@@ -37,7 +46,7 @@ char *get_reponse(raw_socket_t *sock, struct sockaddr_in sin)
         buffer = calloc(1024, sizeof(char));
         size = recvfrom(sock->sock, buffer, 1024, 0, (struct sockaddr *) &sin, &socket_size);
         buffer[size] = '\0';
-        if (IS_RESP_PACKET(buffer, 0))
+        if (is_resp_packet(buffer))
             return clean_reponse(buffer);
         free(buffer);
     }
