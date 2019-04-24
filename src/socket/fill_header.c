@@ -33,7 +33,7 @@ int fill_ip_header(
     iph->ttl = 255;
     iph->protocol = IPPROTO_UDP;
     iph->check = 0;
-    iph->saddr = inet_addr("127.0.0.1");
+    iph->saddr = inet_addr("10.15.192.224");
     iph->daddr = sin.sin_addr.s_addr;
     iph->check = csum((unsigned short *) datagram, iph->tot_len);
     return 0;
@@ -41,8 +41,8 @@ int fill_ip_header(
 
 void fill_udp_header(struct udphdr *udph, char *data, int s_port, int d_port)
 {
-    udph->source = htons (s_port);
-    udph->dest = htons (d_port);
+    udph->source = htons(s_port);
+    udph->dest = htons(d_port);
     udph->len = htons(8 + strlen(data));
     udph->check = 0;
 }
@@ -59,7 +59,7 @@ void fill_pseudo_header(
     sizeof(struct pseudo_header) + sizeof(struct udphdr) + strlen(data);
 
     pseudogram = malloc(psize);
-    psh.source_address = inet_addr("127.0.0.1");
+    psh.source_address = inet_addr("10.15.192.224");
     psh.dest_address = sin.sin_addr.s_addr;
     psh.placeholder = 0;
     psh.protocol = IPPROTO_UDP;

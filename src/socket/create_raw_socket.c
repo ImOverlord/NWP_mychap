@@ -20,15 +20,10 @@ static void create_socket_addresse_in(struct sockaddr_in *name, size_t port)
 static int bind_socket(raw_socket_t *raw_socket)
 {
     struct sockaddr_in client;
-    socklen_t name_size = sizeof(client);
 
-    create_socket_addresse_in(&client, 3000);
-    if (bind(raw_socket->sock, (struct sockaddr *)&client, name_size) < 0) {
-        perror("bind");
-        return 0;
-    }
+    create_socket_addresse_in(&client, PORT);
     raw_socket->client = client;
-    raw_socket->port = 3000;
+    raw_socket->port = PORT;
     return 1;
 }
 

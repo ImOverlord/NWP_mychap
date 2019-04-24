@@ -33,6 +33,10 @@ static int error_handling(char *response)
         printf("KO\n");
         return 1;
     }
+    if (strcmp(response, SESSION_TIMEOUT_MSG) == 0) {
+        printf("KO\n");
+        return 1;
+    }
     return 0;
 }
 

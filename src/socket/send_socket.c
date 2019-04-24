@@ -27,16 +27,17 @@ char *clean_reponse(char *buffer)
     return clean;
 }
 
-char *get_reponse(raw_socket_t *sock)
+char *get_reponse(raw_socket_t *sock, struct sockaddr_in sin)
 {
     char *buffer;
     int size;
+    socklen_t socket_size = sizeof(sin);
 
-    for (int i = 0; i < 2; i++) {
+    for (;;) {
         buffer = calloc(1024, sizeof(char));
-        size = recv(sock->sock, buffer, 1024, 0);
+        size = recvfrom(sock->sock, buffer, 1024, 0, (struct sockaddr *) &sin, &socket_size);
         buffer[size] = '\0';
-        if (i == 1)
+        if (IS_RESP_PACKET(buffer, 0))
             return clean_reponse(buffer);
         free(buffer);
     }
@@ -52,7 +53,7 @@ char *send_socket(
 {
     char datagram[4096] , *data;
     struct iphdr *iph = (struct iphdr *) datagram;
-    struct udphdr *udph = (struct udphdr *) (datagram + sizeof (struct ip));
+    struct udphdr *udph = (struct udphdr *) (datagram + sizeof (struct iphdr));
     struct sockaddr_in sin;
 
     fill_server_info(&sin, target, port);
@@ -63,7 +64,8 @@ char *send_socket(
     fill_udp_header(udph, data, sock->port, port);
     fill_pseudo_header(udph, data, sin);
     if (sendto (sock->sock, datagram, iph->tot_len, 0,
-    (struct sockaddr *) &sin, sizeof (sin)) < 0)
+    (struct sockaddr *) &sin, sizeof (sin)) < 0) {
         return NULL;
-    return get_reponse(sock);
+    }
+    return get_reponse(sock, sin);
 }
