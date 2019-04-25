@@ -22,11 +22,8 @@ static int bind_socket(raw_socket_t *raw_socket)
     struct sockaddr_in client;
     socklen_t name_size = sizeof(client);
 
-    create_socket_addresse_in(&client, 3000);
-    if (bind(raw_socket->sock, (struct sockaddr *)&client, name_size) < 0) {
-        perror("bind");
+    if (getsockname(raw_socket->sock, &client, &name_size) < 0)
         return 0;
-    }
     raw_socket->client = client;
     raw_socket->port = 3000;
     return 1;

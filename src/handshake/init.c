@@ -47,6 +47,7 @@ int init_handshake(arguments_t **args)
     raw_socket_t *sock = crate_raw_socket();
     if (!sock)
         return 0;
+    fill_server_info(&sock->server, target, port);
     response = send_socket(target, port, sock, PHASE1_MESG);
     if (error_handling(response))
         return 0;
