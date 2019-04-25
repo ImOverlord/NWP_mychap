@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include "socket/socket.h"
 
-unsigned short csum(unsigned short *ptr,int nbytes)
+unsigned short csum(unsigned short *ptr, int nbytes)
 {
     long sum;
     unsigned short oddbyte;
@@ -29,5 +29,5 @@ unsigned short csum(unsigned short *ptr,int nbytes)
     sum = (sum>>16) + (sum & 0xffff);
     sum = sum + (sum>>16);
     answer=(short)~sum;
-    return(answer);
+    return (answer);
 }

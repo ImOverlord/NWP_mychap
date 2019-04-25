@@ -56,7 +56,6 @@ int init_handshake(arguments_t **args)
     response = send_socket(target, port, sock, sha256(key));
     if (error_handling(response))
         return 0;
-    else
-        printf("Secret: '%s'\n", response);
+    printf("Secret: '%s'\n", response);
     return 1;
 }

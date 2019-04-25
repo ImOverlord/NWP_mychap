@@ -26,7 +26,8 @@ int fill_ip_header(
     iph->ihl = 5;
     iph->version = 4;
     iph->tos = 0;
-    iph->tot_len = sizeof (struct iphdr) + sizeof (struct udphdr) + strlen(data);
+    iph->tot_len =
+    sizeof (struct iphdr) + sizeof (struct udphdr) + strlen(data);
     iph->id = htonl (54321);
     iph->frag_off = 0;
     iph->ttl = 255;
@@ -54,7 +55,8 @@ void fill_pseudo_header(
 {
     char *pseudogram;
     struct pseudo_header psh;
-    int psize = sizeof(struct pseudo_header) + sizeof(struct udphdr) + strlen(data);
+    int psize =
+    sizeof(struct pseudo_header) + sizeof(struct udphdr) + strlen(data);
 
     pseudogram = malloc(psize);
     psh.source_address = inet_addr("127.0.0.1");
@@ -63,6 +65,7 @@ void fill_pseudo_header(
     psh.protocol = IPPROTO_UDP;
     psh.udp_length = htons(sizeof(struct udphdr) + strlen(data));
     memcpy(pseudogram , (char*) &psh , sizeof (struct pseudo_header));
-    memcpy(pseudogram + sizeof(struct pseudo_header) , udph , sizeof(struct udphdr) + strlen(data));
+    memcpy(pseudogram + sizeof(struct pseudo_header), udph,
+    sizeof(struct udphdr) + strlen(data));
     udph->check = csum( (unsigned short*) pseudogram , psize);
 }
