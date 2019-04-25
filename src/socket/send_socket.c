@@ -23,8 +23,17 @@ char *clean_reponse(char *buffer)
         sizeof(char)
     );
     clean = strdup(buffer + sizeof(struct iphdr) + sizeof(struct udphdr));
-    free(buffer);
+    // free(buffer);
     return clean;
+}
+
+static int is_resp_packet(char *buffer, raw_socket_t *sock)
+{
+    int packet_port =
+    ntohs(((struct udphdr *)(buffer + sizeof(struct iphdr)))->dest);
+    if (packet_port == sock->port)
+        return 1;
+    return 0;
 }
 
 char *get_reponse(raw_socket_t *sock)
@@ -32,11 +41,12 @@ char *get_reponse(raw_socket_t *sock)
     char *buffer;
     int size;
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i >= 0; i++) {
         buffer = calloc(1024, sizeof(char));
-        size = recv(sock->sock, buffer, 1024, 0);
+        size = recvfrom(sock->sock, buffer, 1024, 0,
+        NULL, NULL);
         buffer[size] = '\0';
-        if (i == 1)
+        if (is_resp_packet(buffer, sock))
             return clean_reponse(buffer);
         free(buffer);
     }
@@ -53,17 +63,15 @@ char *send_socket(
     char datagram[4096] , *data;
     struct iphdr *iph = (struct iphdr *) datagram;
     struct udphdr *udph = (struct udphdr *) (datagram + sizeof (struct ip));
-    struct sockaddr_in sin;
 
-    fill_server_info(&sin, target, port);
     memset(datagram, 0, 4096);
     data = datagram + sizeof(struct iphdr) + sizeof(struct udphdr);
     strcpy(data, message);
-    fill_ip_header(iph, datagram, data, sin);
+    fill_ip_header(iph, datagram, data, sock);
     fill_udp_header(udph, data, sock->port, port);
-    fill_pseudo_header(udph, data, sin);
+    fill_pseudo_header(udph, data, sock);
     if (sendto (sock->sock, datagram, iph->tot_len, 0,
-    (struct sockaddr *) &sin, sizeof (sin)) < 0)
+    (struct sockaddr *) &sock->server, sizeof (sock->server)) < 0)
         return NULL;
     return get_reponse(sock);
 }
