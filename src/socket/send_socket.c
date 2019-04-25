@@ -16,37 +16,38 @@
 #include <arpa/inet.h>
 #include "socket/socket.h"
 
-char *clean_reponse(char *buffer)
+static char *clean_reponse(char *buffer)
 {
     char *clean = calloc(
         (buffer + sizeof(struct iphdr) + sizeof(struct udphdr)),
         sizeof(char)
     );
     clean = strdup(buffer + sizeof(struct iphdr) + sizeof(struct udphdr));
-    free(buffer);
+    // free(buffer);
     return clean;
 }
 
-int is_resp_packet(char *buffer)
+static int is_resp_packet(char *buffer, raw_socket_t *sock)
 {
     int packet_port =
     ntohs(((struct udphdr *)(buffer + sizeof(struct iphdr)))->dest);
-    if (packet_port == PORT)
+    printf("PORT %d %d %s\n", packet_port, sock->port, clean_reponse(buffer));
+    if (packet_port == sock->port)
         return 1;
     return 0;
 }
 
-char *get_reponse(raw_socket_t *sock, struct sockaddr_in sin)
+static char *get_reponse(raw_socket_t *sock, struct sockaddr_in sin)
 {
     char *buffer;
     int size;
     socklen_t socket_size = sizeof(sin);
 
-    for (;;) {
+    for (int i = 0; i >= 0; i++) {
         buffer = calloc(1024, sizeof(char));
-        size = recvfrom(sock->sock, buffer, 1024, 0, (struct sockaddr *) &sin, &socket_size);
+        size = recvfrom(sock->sock, buffer, 1024, 0, (struct sockaddr *) &sin, sizeof (sin));
         buffer[size] = '\0';
-        if (is_resp_packet(buffer))
+        if (is_resp_packet(buffer, sock))
             return clean_reponse(buffer);
         free(buffer);
     }
@@ -69,10 +70,10 @@ char *send_socket(
     memset(datagram, 0, 4096);
     data = datagram + sizeof(struct iphdr) + sizeof(struct udphdr);
     strcpy(data, message);
-    fill_ip_header(iph, datagram, data, sin);
+    fill_ip_header(iph, datagram, data, sin, sock);
     fill_udp_header(udph, data, sock->port, port);
-    fill_pseudo_header(udph, data, sin);
-    if (sendto (sock->sock, datagram, iph->tot_len, 0,
+    fill_pseudo_header(udph, data, sin, sock);
+    if (sendto(sock->sock, datagram, iph->tot_len, 0,
     (struct sockaddr *) &sin, sizeof (sin)) < 0) {
         return NULL;
     }

@@ -22,19 +22,19 @@ static char *get_by_key(arguments_t **args, char *key)
 static int error_handling(char *response)
 {
     if (!response) {
-        printf("KO\n");
+        printf("KO1\n");
         return 1;
     }
     if (strcmp(response, ERROR_MSG) == 0) {
-        printf("KO\n");
+        printf("KO2\n");
         return 1;
     }
     if (strcmp(response, KO_MSG) == 0) {
-        printf("KO\n");
+        printf("KO3\n");
         return 1;
     }
     if (strcmp(response, SESSION_TIMEOUT_MSG) == 0) {
-        printf("KO\n");
+        printf("KO4\n");
         return 1;
     }
     return 0;
