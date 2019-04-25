@@ -20,7 +20,8 @@ int fill_ip_header(
     struct iphdr *iph,
     char *datagram,
     char *data,
-    struct sockaddr_in sin
+    struct sockaddr_in sin,
+    raw_socket_t *sock
 )
 {
     iph->ihl = 5;
@@ -33,7 +34,7 @@ int fill_ip_header(
     iph->ttl = 255;
     iph->protocol = IPPROTO_UDP;
     iph->check = 0;
-    iph->saddr = inet_addr("127.0.0.1");
+    iph->saddr = inet_addr(sock->dest);
     iph->daddr = sin.sin_addr.s_addr;
     iph->check = csum((unsigned short *) datagram, iph->tot_len);
     return 0;
@@ -41,8 +42,8 @@ int fill_ip_header(
 
 void fill_udp_header(struct udphdr *udph, char *data, int s_port, int d_port)
 {
-    udph->source = htons (s_port);
-    udph->dest = htons (d_port);
+    udph->source = htons(s_port);
+    udph->dest = htons(d_port);
     udph->len = htons(8 + strlen(data));
     udph->check = 0;
 }
@@ -50,7 +51,8 @@ void fill_udp_header(struct udphdr *udph, char *data, int s_port, int d_port)
 void fill_pseudo_header(
     struct udphdr *udph,
     char *data,
-    struct sockaddr_in sin
+    struct sockaddr_in sin,
+    raw_socket_t *sock
 )
 {
     char *pseudogram;
@@ -59,13 +61,13 @@ void fill_pseudo_header(
     sizeof(struct pseudo_header) + sizeof(struct udphdr) + strlen(data);
 
     pseudogram = malloc(psize);
-    psh.source_address = inet_addr("127.0.0.1");
+    psh.source_address = inet_addr(sock->dest);
     psh.dest_address = sin.sin_addr.s_addr;
     psh.placeholder = 0;
     psh.protocol = IPPROTO_UDP;
     psh.udp_length = htons(sizeof(struct udphdr) + strlen(data));
-    memcpy(pseudogram , (char*) &psh , sizeof (struct pseudo_header));
+    memcpy(pseudogram, (char*)&psh , sizeof (struct pseudo_header));
     memcpy(pseudogram + sizeof(struct pseudo_header), udph,
     sizeof(struct udphdr) + strlen(data));
-    udph->check = csum( (unsigned short*) pseudogram , psize);
+    udph->check = csum((unsigned short*)pseudogram , psize);
 }
