@@ -36,6 +36,21 @@ static int error_handling(char *response)
     return 0;
 }
 
+int send_next_step(
+    raw_socket_t *sock,
+    int port,
+    char *key
+)
+{
+    char *response;
+
+    response = send_socket(port, sock, sha256(key));
+    if (error_handling(response))
+        return 0;
+    printf("Secret: '%s'\n", response);
+    return 1;
+}
+
 int init_handshake(arguments_t **args)
 {
     char *target = get_by_key(args, "target");
@@ -48,15 +63,11 @@ int init_handshake(arguments_t **args)
     if (!sock)
         return 0;
     fill_server_info(&sock->server, target, port);
-    response = send_socket(target, port, sock, PHASE1_MESG);
+    response = send_socket(port, sock, PHASE1_MESG);
     if (error_handling(response))
         return 0;
     key = calloc(NONCE_LENGTH + strlen(password), sizeof(char));
     strcpy(key, response);
     strcat(key, password);
-    response = send_socket(target, port, sock, sha256(key));
-    if (error_handling(response))
-        return 0;
-    printf("Secret: '%s'\n", response);
-    return 1;
+    return send_next_step(sock, port, key);
 }

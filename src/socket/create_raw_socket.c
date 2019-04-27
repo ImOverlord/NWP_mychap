@@ -10,19 +10,13 @@
 #include <arpa/inet.h>
 #include "socket/socket.h"
 
-static void create_socket_addresse_in(struct sockaddr_in *name, size_t port)
-{
-    name->sin_family        = AF_INET;
-    name->sin_port          = htons(port);
-    name->sin_addr.s_addr   = inet_addr("127.0.0.1");
-}
-
 static int bind_socket(raw_socket_t *raw_socket)
 {
     struct sockaddr_in client;
     socklen_t name_size = sizeof(client);
 
-    if (getsockname(raw_socket->sock, &client, &name_size) < 0)
+    if (getsockname(raw_socket->sock,
+    (struct sockaddr *) &client, &name_size) < 0)
         return 0;
     raw_socket->client = client;
     raw_socket->port = 3000;
