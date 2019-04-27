@@ -23,7 +23,7 @@ char *clean_reponse(char *buffer)
         sizeof(char)
     );
     clean = strdup(buffer + sizeof(struct iphdr) + sizeof(struct udphdr));
-    // free(buffer);
+    free(buffer);
     return clean;
 }
 
