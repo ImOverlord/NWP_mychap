@@ -16,7 +16,7 @@
 #include <arpa/inet.h>
 #include "socket/socket.h"
 
-char *clean_reponse(char *buffer)
+static char *clean_reponse(char *buffer)
 {
     char *clean = calloc(
         (buffer + sizeof(struct iphdr) + sizeof(struct udphdr)),
@@ -36,7 +36,7 @@ static int is_resp_packet(char *buffer, raw_socket_t *sock)
     return 0;
 }
 
-char *get_reponse(raw_socket_t *sock)
+static char *get_response(raw_socket_t *sock)
 {
     char *buffer;
     int size;
@@ -71,5 +71,5 @@ char *send_socket(
     if (sendto (sock->sock, datagram, iph->tot_len, 0,
     (struct sockaddr *) &sock->server, sizeof (sock->server)) < 0)
         return NULL;
-    return get_reponse(sock);
+    return get_response(sock);
 }
