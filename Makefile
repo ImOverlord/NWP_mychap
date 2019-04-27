@@ -18,7 +18,6 @@ SRC		=	arguments/parse_args.c											\
 			network/resolve_hostname.c										\
 			socket/send_socket.c											\
 			socket/create_raw_socket.c										\
-			socket/csum.c													\
 			socket/fill_header.c											\
 			handshake/init.c												\
 			handshake/hash.c												\

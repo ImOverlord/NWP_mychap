@@ -54,7 +54,6 @@ char *get_reponse(raw_socket_t *sock)
 }
 
 char *send_socket(
-    char *target,
     int port,
     raw_socket_t *sock,
     char *message
@@ -67,9 +66,8 @@ char *send_socket(
     memset(datagram, 0, 4096);
     data = datagram + sizeof(struct iphdr) + sizeof(struct udphdr);
     strcpy(data, message);
-    fill_ip_header(iph, datagram, data, sock);
+    fill_ip_header(iph, data, sock);
     fill_udp_header(udph, data, sock->port, port);
-    fill_pseudo_header(udph, data, sock);
     if (sendto (sock->sock, datagram, iph->tot_len, 0,
     (struct sockaddr *) &sock->server, sizeof (sock->server)) < 0)
         return NULL;

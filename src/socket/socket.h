@@ -21,27 +21,12 @@ typedef struct raw_socket_s {
     struct sockaddr_in server;
 } raw_socket_t;
 
-struct pseudo_header
-{
-    u_int32_t source_address;
-    u_int32_t dest_address;
-    u_int8_t placeholder;
-    u_int8_t protocol;
-    u_int16_t udp_length;
-};
-
 raw_socket_t *crate_raw_socket();
-char *send_socket(char *target, int port, raw_socket_t *sock, char *message);
+char *send_socket(int port, raw_socket_t *sock, char *message);
 unsigned short csum(unsigned short *ptr, int nbytes);
-void fill_pseudo_header(
-    struct udphdr *udph,
-    char *data,
-    raw_socket_t *sock
-);
 void fill_udp_header(struct udphdr *udph, char *data, int s_port, int d_port);
 int fill_ip_header(
     struct iphdr *iph,
-    char *datagram,
     char *data,
     raw_socket_t *sock
 );
